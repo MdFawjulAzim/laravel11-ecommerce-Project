@@ -38,7 +38,7 @@ class AdminController extends Controller
         $brand->name = $request->name;
     
         // Slug তৈরি করার সময় $request->name থেকে জেনারেট করুন
-        $brand->slug = Str::slug($request->name);
+        $brand->slug = Str::slug($request->slug);
     
         // Image Upload
         $image = $request->file('image');
@@ -69,18 +69,17 @@ class AdminController extends Controller
         $request->validate([
             'name' => 'required',
             'slug' => 'required|unique:brands,slug,' . $request->id,
-            'image' => 'mimes:png,jpg,jpeg|max:2048'
+            'image' => 'nullable|mimes:png,jpg,jpeg|max:2048'
         ], [
-            // ইমেজের জন্য কাস্টম এরর ম্যাসেজ
             'image.mimes' => 'Image must be a file of type: png, jpg, jpeg.',
             'image.max' => 'Image size must not exceed 2MB.',
         ]);
     
         $brand = Brand::find($request->id);
+        
+        // নাম এবং স্লাগ আপডেট করুন
         $brand->name = $request->name;
-    
-        // Slug তৈরি করার সময় $request->name থেকে জেনারেট করুন
-        $brand->slug = Str::slug($request->name);
+        $brand->slug = Str::slug($request->slug); // Slug আপডেট করতে $request->name ব্যবহার করুন
     
         // চেক করুন ইমেজ ফাইল এসেছে কিনা
         if ($request->hasFile('image')) {
@@ -100,9 +99,6 @@ class AdminController extends Controller
     
             // নতুন ইমেজ ফাইল সেভ
             $brand->image = $file_name;
-        } else {
-            // যদি ইমেজ না থাকে, তাহলে একটি error message দেখানো হবে
-            return redirect()->back()->withErrors(['image' => 'Please upload an image for the brand.']);
         }
     
         // ব্র্যান্ড সেভ
@@ -111,6 +107,8 @@ class AdminController extends Controller
         // রিডিরেক্ট এবং সাকসেস মেসেজ
         return redirect()->route('admin.brands')->with('status', 'Brand Has Been Updated Successfully!');
     }
+    
+    
     
     
     public function GenerateBrandThumbnailsImage($image, $imageName) {
