@@ -22,18 +22,25 @@ class AdminController extends Controller
         return view('admin.brand-add');
     }
     public function brand_store(Request $request) {
+        // Validate the input including making image required
         $request->validate([
-            'name' =>'required',
-            'slug' =>'required|unique:brands,slug',
-            'image'=>'mimes:png,jpg,jpeg|max:2048'
+            'name' => 'required',
+            'slug' => 'required|unique:brands,slug',
+            'image' => 'required|mimes:png,jpg,jpeg|max:2048'
+        ], [
+            // Custom error message for image
+            'image.required' => 'Please upload an image for the brand.',
+            'image.mimes' => 'The image must be a file of type: png, jpg, jpeg.',
+            'image.max' => 'The image size must not exceed 2MB.'
         ]);
     
         $brand = new Brand();
         $brand->name = $request->name;
-        
+    
         // Slug তৈরি করার সময় $request->name থেকে জেনারেট করুন
         $brand->slug = Str::slug($request->name);
     
+        // Image Upload
         $image = $request->file('image');
         $file_extension = $image->extension();
         $file_name = Carbon::now()->timestamp . '.' . $file_extension;
@@ -50,6 +57,7 @@ class AdminController extends Controller
         // রিডিরেক্ট এবং সাকসেস মেসেজ
         return redirect()->route('admin.brands')->with('status', 'Brand Has Been Added Successfully!');
     }
+    
 
 
     public function brand_edit($id){
