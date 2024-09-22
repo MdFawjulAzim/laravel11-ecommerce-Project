@@ -113,6 +113,22 @@ class AdminController extends Controller
             $constraint->aspectRatio();  // aspectRation-এর ভুল সংশোধন
         })->save($destinationPath . '/' . $imageName);
     }
+
+
+    public function brand_delete($id) {
+        $brand = Brand::find($id);
+        
+        // আগের ��মে�� ��িলিট করা হ��্ছে
+        if (File::exists(public_path('uploads/brands/'. $brand->image))) {
+            File::delete(public_path('uploads/brands/'. $brand->image));
+        }
+        
+        // ব্র্যান্�� ��িলিট করা হ��্ছে
+        $brand->delete();
+
+        // ��ি��িরেক্ট এবং সাকসেস মেসে��
+        return redirect()->route('admin.brands')->with('status', 'Brand Has Been Deleted Successfully!');
+    }
     
     
 }

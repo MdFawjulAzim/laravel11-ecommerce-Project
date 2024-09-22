@@ -72,11 +72,15 @@
                                                 <i class="icon-edit-3"></i>
                                             </div>
                                         </a>
-                                        <form action="#" method="POST">
+                                        <form action="{{ route('admin.brand.delete', ['id' => $brand->id]) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            
                                             <div class="item text-danger delete">
                                                 <i class="icon-trash-2"></i>
                                             </div>
-                                        </form>
+                                        </form>                                    
+                                        
                                     </div>
                                 </td>
                             </tr>
@@ -93,3 +97,34 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<script>
+    $(function () {
+        // Delete confirmation
+        $(".delete").click(function (event) {
+            event.preventDefault();
+            var form = $(this).closest('form');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>
+
+@endpush
