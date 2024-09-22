@@ -54,7 +54,7 @@
                         <tbody>
                             @foreach ($brands as $brand)
                             <tr>
-                                <td>(($brand->id))</td>
+                                <td>{{ $brand->id }}</td>
                                 <td class="pname">
                                     <div class="image">
                                         <img src="{{ asset("uploads/brands") }}/{{ $brand->image }}" alt="{{ $brand->name }}" class="image">
