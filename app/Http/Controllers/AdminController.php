@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Brand;
+use App\Models\Category;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -37,35 +38,33 @@ class AdminController extends Controller
         $brand = new Brand();
         $brand->name = $request->name;
     
-        // Slug তৈরি করার সময় $request->name থেকে জেনারেট করুন
-        $brand->slug = Str::slug($request->slug);
+        // Generate the slug from $request->name
+        $brand->slug = Str::slug($request->name);
     
         // Image Upload
         $image = $request->file('image');
         $file_extension = $image->extension();
         $file_name = Carbon::now()->timestamp . '.' . $file_extension;
     
-        // ফাইল মুভ করুন সঠিক ডিরেক্টরিতে
+        // Move the file to the correct directory
         $image->move(public_path('uploads/brands'), $file_name);
     
-        // ইমেজ ফাইল সেভ
+        // Save the image file
         $brand->image = $file_name;
     
-        // ব্র্যান্ড সেভ
+        // Save the brand
         $brand->save();
     
-        // রিডিরেক্ট এবং সাকসেস মেসেজ
+        // Redirect and display success message
         return redirect()->route('admin.brands')->with('status', 'Brand Has Been Added Successfully!');
     }
     
-
-
     public function brand_edit($id){
         $brand = Brand::find($id);
         return view('admin.brand-edit',compact('brand'));
     }
     public function brand_update(Request $request) {
-        // Validate করার সময় ইমেজের জন্য শর্ত দিন
+        // Validate input and set conditions for the image
         $request->validate([
             'name' => 'required',
             'slug' => 'required|unique:brands,slug,' . $request->id,
@@ -77,63 +76,67 @@ class AdminController extends Controller
     
         $brand = Brand::find($request->id);
         
-        // নাম এবং স্লাগ আপডেট করুন
+        // Update the name and slug
         $brand->name = $request->name;
-        $brand->slug = Str::slug($request->slug); // Slug আপডেট করতে $request->name ব্যবহার করুন
+        $brand->slug = Str::slug($request->name); // Use $request->name to update the slug
     
-        // চেক করুন ইমেজ ফাইল এসেছে কিনা
+        // Check if an image file is uploaded
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             
-            // আগের ইমেজ ডিলিট করা হচ্ছে
+            // Delete the old image
             if (File::exists(public_path('uploads/brands/' . $brand->image))) {
                 File::delete(public_path('uploads/brands/' . $brand->image));
             }
     
-            // নতুন ফাইলের নাম এবং লোকেশন সেট করা হচ্ছে
+            // Set the new file name and location
             $file_extension = $image->extension();
             $file_name = Carbon::now()->timestamp . '.' . $file_extension;
     
-            // ফাইল মুভ করুন সঠিক ডিরেক্টরিতে
+            // Move the file to the correct directory
             $image->move(public_path('uploads/brands'), $file_name);
     
-            // নতুন ইমেজ ফাইল সেভ
+            // Save the new image file
             $brand->image = $file_name;
         }
     
-        // ব্র্যান্ড সেভ
+        // Save the brand
         $brand->save();
     
-        // রিডিরেক্ট এবং সাকসেস মেসেজ
+        // Redirect and display success message
         return redirect()->route('admin.brands')->with('status', 'Brand Has Been Updated Successfully!');
     }
     
-    
-    
-    
     public function GenerateBrandThumbnailsImage($image, $imageName) {
         $destinationPath = public_path('uploads/brands');
-        $img = Image::make($image->path());  // Image::make() ব্যবহার করুন
+        $img = Image::make($image->path());  // Use Image::make()
         
         $img->resize(124, 124, function ($constraint) {
-            $constraint->aspectRatio();  // aspectRation-এর ভুল সংশোধন
+            $constraint->aspectRatio();  // Fix the aspectRatio typo
         })->save($destinationPath . '/' . $imageName);
     }
-
 
     public function brand_delete($id) {
         $brand = Brand::find($id);
         
-        // আগের ��মে�� ��িলিট করা হ��্ছে
+        // Delete the old image
         if (File::exists(public_path('uploads/brands/'. $brand->image))) {
             File::delete(public_path('uploads/brands/'. $brand->image));
         }
         
-        // ব্র্যান্�� ��িলিট করা হ��্ছে
+        // Delete the brand
         $brand->delete();
 
-        // ��ি��িরেক্ট এবং সাকসেস মেসে��
+        // Redirect and display success message
         return redirect()->route('admin.brands')->with('status', 'Brand Has Been Deleted Successfully!');
+    }
+    // ----------------------------------------------------------------
+
+    //Category 
+    public function categories(){
+        $categories = Category::orderBy('id','DESC')->paginate(10);
+        return view('admin.categories',compact('categories'));
+
     }
     
     
