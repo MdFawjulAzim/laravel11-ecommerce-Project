@@ -38,9 +38,6 @@ Route::middleware(['auth', AuthAdmin::class])->group(function () {
     Route::delete('/admin/category/delete/{id}', [AdminController::class, 'category_delete'])->name('admin.category.delete');
     //End Categories Page
 
-
-    
-
-
-
+    // Products for authenticated
+    Route::get('/admin/products', [AdminController::class, 'products'])->name('admin.products');
 });
