@@ -43,16 +43,10 @@ class AdminController extends Controller
     
         // Image Upload
         $image = $request->file('image');
-        $file_extension = $image->extension();
-        $file_name = Carbon::now()->timestamp . '.' . $file_extension;
-    
-        // Move the file to the correct directory
-        $image->move(public_path('uploads/brands'), $file_name);
-    
-        // Save the image file
-        $brand->image = $file_name;
-    
-        // Save the brand
+        $file_extension= $request->file('image')->extension();
+        $file_name = Carbon::now()->timestamp.'.'.$file_extension;
+        $this->GenerateBrandThumbnailsImage($image,$file_name);
+        $brand->image =$file_name;
         $brand->save();
     
         // Redirect and display success message
@@ -82,38 +76,30 @@ class AdminController extends Controller
     
         // Check if an image file is uploaded
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            
             // Delete the old image
             if (File::exists(public_path('uploads/brands/' . $brand->image))) {
                 File::delete(public_path('uploads/brands/' . $brand->image));
             }
-    
-            // Set the new file name and location
-            $file_extension = $image->extension();
-            $file_name = Carbon::now()->timestamp . '.' . $file_extension;
-    
-            // Move the file to the correct directory
-            $image->move(public_path('uploads/brands'), $file_name);
-    
-            // Save the new image file
-            $brand->image = $file_name;
         }
-    
-        // Save the brand
+        // Image Upload
+        $image = $request->file('image');
+        $file_extension= $request->file('image')->extension();
+        $file_name = Carbon::now()->timestamp.'.'.$file_extension;
+        $this->GenerateBrandThumbnailsImage($image,$file_name);
+        $brand->image =$file_name;
         $brand->save();
-    
         // Redirect and display success message
         return redirect()->route('admin.brands')->with('status', 'Brand Has Been Updated Successfully!');
-    }
+
+        }
     
     public function GenerateBrandThumbnailsImage($image, $imageName) {
         $destinationPath = public_path('uploads/brands');
-        $img = Image::make($image->path());  // Use Image::make()
-        
-        $img->resize(124, 124, function ($constraint) {
-            $constraint->aspectRatio();  // Fix the aspectRatio typo
-        })->save($destinationPath . '/' . $imageName);
+        $img = Image::read($image->path());
+        $img->cover(124,124,"top");
+        $img->resize(124,124,function($constraint){
+            $constraint->aspectRatio();
+        })->save($destinationPath.'/'.$imageName);
     }
 
     public function brand_delete($id) {
@@ -162,21 +148,24 @@ class AdminController extends Controller
 
     // Image Upload
     $image = $request->file('image');
-    $file_extension = $image->extension();
-    $file_name = Carbon::now()->timestamp . '.' . $file_extension;
-
-    // Move the file to the correct directory
-    $image->move(public_path('uploads/categories'), $file_name);
-
-    // Save the image file
-    $category->image = $file_name;
-
-    // Save the brand
+    $file_extension= $request->file('image')->extension();
+    $file_name = Carbon::now()->timestamp.'.'.$file_extension;
+    $this->GenerateCategoryThumbnailsImage($image,$file_name);
+    $category->image =$file_name;
     $category->save();
 
     // Redirect and display success message
     return redirect()->route('admin.categories')->with('status', 'category Has Been Added Successfully!');
         
+    }
+
+    public function GenerateCategoryThumbnailsImage($image, $imageName) {
+        $destinationPath = public_path('uploads/categories');
+        $img = Image::read($image->path());
+        $img->cover(124,124,"top");
+        $img->resize(124,124,function($constraint){
+            $constraint->aspectRatio();
+        })->save($destinationPath.'/'.$imageName);
     }
     
     
