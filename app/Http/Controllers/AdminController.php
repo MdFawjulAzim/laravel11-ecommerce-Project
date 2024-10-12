@@ -167,6 +167,60 @@ class AdminController extends Controller
             $constraint->aspectRatio();
         })->save($destinationPath.'/'.$imageName);
     }
+    public function category_edit($id){
+        $category = Category::find($id);
+        return view('admin.category-edit',compact('category'));
+    }
+
+    public function category_update(Request $request){
+         // Validate input and set conditions for the image
+         $request->validate([
+            'name' => 'required',
+            'slug' => 'required|unique:categories,slug,' . $request->id,
+            'image' => 'nullable|mimes:png,jpg,jpeg|max:2048'
+        ], [
+            'image.mimes' => 'Image must be a file of type: png, jpg, jpeg.',
+            'image.max' => 'Image size must not exceed 2MB.',
+        ]);
+    
+        $category = Category::find($request->id);
+        
+        // Update the name and slug
+        $category->name = $request->name;
+        $category->slug = Str::slug($request->name); // Use $request->name to update the slug
+    
+        // Check if an image file is uploaded
+        if ($request->hasFile('image')) {
+            // Delete the old image
+            if (File::exists(public_path('uploads/categories/' . $category->image))) {
+                File::delete(public_path('uploads/categories/' . $category->image));
+            }
+        }
+        // Image Upload
+        $image = $request->file('image');
+        $file_extension= $request->file('image')->extension();
+        $file_name = Carbon::now()->timestamp.'.'.$file_extension;
+        $this->GenerateCategoryThumbnailsImage($image,$file_name);
+        $category->image =$file_name;
+        $category->save();
+        // Redirect and display success message
+        return redirect()->route('admin.categories')->with('status', 'category Has Been Updated Successfully!');
+    }
+
+    public function category_delete($id) {
+        $category = Category::find($id);
+        
+        // Delete the old image
+        if (File::exists(public_path('uploads/categories/'. $category->image))) {
+            File::delete(public_path('uploads/categories/'. $category->image));
+        }
+        
+        // Delete the brand
+        $category->delete();
+
+        // Redirect and display success message
+        return redirect()->route('admin.categories')->with('status', 'category Has Been Deleted Successfully!');
+    }
     
     
 }
