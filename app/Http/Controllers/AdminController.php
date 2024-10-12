@@ -138,6 +138,46 @@ class AdminController extends Controller
         return view('admin.categories',compact('categories'));
 
     }
+    public function add_category(){
+        return view('admin.category-add');
+    }
+    public function category_store(Request $request) {
+       // Validate the input including making image required
+       $request->validate([
+        'name' => 'required',
+        'slug' => 'required|unique:categories,slug',
+        'image' => 'required|mimes:png,jpg,jpeg|max:2048'
+    ], [
+        // Custom error message for image
+        'image.required' => 'Please upload an image for the brand.',
+        'image.mimes' => 'The image must be a file of type: png, jpg, jpeg.',
+        'image.max' => 'The image size must not exceed 2MB.'
+    ]);
+
+    $category = new Category();
+    $category->name = $request->name;
+
+    // Generate the slug from $request->name
+    $category->slug = Str::slug($request->name);
+
+    // Image Upload
+    $image = $request->file('image');
+    $file_extension = $image->extension();
+    $file_name = Carbon::now()->timestamp . '.' . $file_extension;
+
+    // Move the file to the correct directory
+    $image->move(public_path('uploads/categories'), $file_name);
+
+    // Save the image file
+    $category->image = $file_name;
+
+    // Save the brand
+    $category->save();
+
+    // Redirect and display success message
+    return redirect()->route('admin.categories')->with('status', 'category Has Been Added Successfully!');
+        
+    }
     
     
 }
