@@ -312,7 +312,7 @@
                 <a href="{{ route('home.index') }}" class="navigation__link">Home</a>
               </li>
               <li class="navigation__item">
-                <a href="shop.html" class="navigation__link">Shop</a>
+                <a href="{{ route('shop.index') }}" class="navigation__link">Shop</a>
               </li>
               <li class="navigation__item">
                 <a href="cart.html" class="navigation__link">Cart</a>
@@ -327,14 +327,36 @@
           </div>
         </div>
   
-        <div class="border-top mt-auto pb-2">
+        {{-- <div class="border-top mt-auto pb-2">
           <div class="customer-links container mt-4 mb-2 pb-1">
             <svg class="d-inline-block align-middle" width="20" height="20" viewBox="0 0 20 20" fill="none"
               xmlns="http://www.w3.org/2000/svg">
               <use href="#icon_user" />
             </svg>
             <span class="d-inline-block ms-2 text-uppercase align-middle fw-medium">My Account</span>
-          </div>
+          </div> --}}
+
+          <div class="header-tools__item hover-container border-top mt-auto pb-2">
+            <div class="customer-links container mt-4 mb-2 pb-1">
+                @if(Auth::check())
+                    <a href="{{ Auth::user()->utype === 'ADM' ? route('admin.index') : route('user.index') }}" class="header-tools__item">
+                        <svg class="d-inline-block align-middle" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <use href="#icon_user" />
+                        </svg>
+                        <span class="d-inline-block ms-2 text-uppercase align-middle fw-medium">{{ Auth::user()->name }}</span>
+                    </a>
+                @else
+                    <a href="{{ route('login') }}" class="header-tools__item">
+                        <svg class="d-inline-block align-middle" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <use href="#icon_user" />
+                        </svg>
+                        <span class="d-inline-block ms-2 text-uppercase align-middle fw-medium">Login</span>
+                    </a>
+                @endif
+            </div>
+        </div>
+        
+        
   
   
   
@@ -401,7 +423,7 @@
                 <a href="{{ route('home.index') }}" class="navigation__link">Home</a>
               </li>
               <li class="navigation__item">
-                <a href="shop.html" class="navigation__link">Shop</a>
+                <a href="{{ route('shop.index') }}" class="navigation__link">Shop</a>
               </li>
               <li class="navigation__item">
                 <a href="cart.html" class="navigation__link">Cart</a>
