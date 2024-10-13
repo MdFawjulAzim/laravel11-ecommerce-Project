@@ -13,6 +13,8 @@ Auth::routes();
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 //Index shop Page
 Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
+//Index single product Page
+Route::get('/shop/{product_slug}', [ShopController::class, 'product_details'])->name('shop.product.details');
 
 
 
