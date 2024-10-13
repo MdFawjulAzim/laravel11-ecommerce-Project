@@ -16,6 +16,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/account-dashboard', [UserController::class, 'index'])->name('user.index');
 });
 
+//----------------------------------------------------------------
+
 
 // Middleware group for authenticated admin users
 Route::middleware(['auth', AuthAdmin::class])->group(function () {
@@ -28,6 +30,7 @@ Route::middleware(['auth', AuthAdmin::class])->group(function () {
     Route::post('/admin/brand/update', [AdminController::class, 'brand_update'])->name('admin.brand.update');
     Route::delete('/admin/brand/delete/{id}', [AdminController::class, 'brand_delete'])->name('admin.brand.delete');
     //End Brands Page  
+    //----------------------------------------------------------------
 
     // Categories for authenticated
     Route::get('/admin/categories', [AdminController::class, 'categories'])->name('admin.categories');
@@ -38,10 +41,18 @@ Route::middleware(['auth', AuthAdmin::class])->group(function () {
     Route::delete('/admin/category/delete/{id}', [AdminController::class, 'category_delete'])->name('admin.category.delete');
     //End Categories Page
 
+    //----------------------------------------------------------------
+
     // Products for authenticated
     Route::get('/admin/products', [AdminController::class, 'products'])->name('admin.products');
     Route::get('/admin/product/add', [AdminController::class, 'add_product'])->name('admin.product.add');
     Route::post('/admin/product/store', [AdminController::class, 'product_store'])->name('admin.product.store');
     Route::get('/admin/product/edit/{id}', [AdminController::class, 'product_edit'])->name('admin.product.edit');
     Route::put('/admin/product/update', [AdminController::class, 'product_update'])->name('admin.product.update');
+    Route::delete('/admin/product/delete/{id}', [AdminController::class, 'product_delete'])->name('admin.product.delete');
+    //End Products Page
+
+    //----------------------------------------------------------------
+
+    
 });

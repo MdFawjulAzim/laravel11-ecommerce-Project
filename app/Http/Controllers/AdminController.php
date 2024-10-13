@@ -425,9 +425,30 @@ class AdminController extends Controller
 
         // Redirect and display success message
         return redirect()->route('admin.products')->with('status', 'Product Has Been Updated Successfully!');
-
-
     }
+
+    public function product_delete($id){
+        $product=Product::find($id);
+        
+        if(File::exists(public_path('uploads/products').'/'.$product->image)){
+            File::delete(public_path('uploads/products').'/'.$product->image);
+        }
+        if(File::exists(public_path('uploads/products/thumbnails').'/'.$product->image)){
+            File::delete(public_path('uploads/products/thumbnails').'/'.$product->image);
+        }
+        foreach(explode(',',$product->images) as $ofile){
+            if(File::exists(public_path('uploads/products').'/'.$ofile)){
+                File::delete(public_path('uploads/products').'/'.$ofile);
+            }
+            if(File::exists(public_path('uploads/products/thumbnails').'/'.$ofile)){
+                File::delete(public_path('uploads/products/thumbnails').'/'.$ofile);
+            }
+        }
+        $product->delete();
+        return redirect()->route('admin.products')->with('status', 'Product Deleted Successfully!'); 
+    }
+    // ----------------------------------------------------------------
+    
 
 
 }
