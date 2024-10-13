@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\UserController;
@@ -13,8 +14,12 @@ Auth::routes();
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 //Index shop Page
 Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
-//Index single product Page
+//Index single product Page/details Page
 Route::get('/shop/{product_slug}', [ShopController::class, 'product_details'])->name('shop.product.details');
+
+//cart page 
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add', [CartController::class, 'add_to_cart'])->name('cart.add');
 
 
 
