@@ -225,7 +225,7 @@
                         <div class="product-single__description">
                             {{ $product->description }}
 
-                            <div class="row">
+                            {{-- <div class="row">
                                 <div class="col-lg-6">
                                     <h3 class="block-title">Why choose product?</h3>
                                     <ul class="list text-list">
@@ -244,7 +244,7 @@
                                 </div>
                             </div>
                             <h3 class="block-title mb-0">Lining</h3>
-                            <p class="content">100% Polyester, Main: 100% Polyester.</p>
+                            <p class="content">100% Polyester, Main: 100% Polyester.</p> --}}
                         </div>
                     </div>
                     <div class="tab-pane fade" id="tab-additional-info" role="tabpanel"
