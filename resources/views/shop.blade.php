@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<style>
+{{-- <style>
   .brand-list li, .category-list li{
     line-height: 40px;
   }
@@ -12,7 +12,7 @@
     border-radius: 0;
     margin-right: 0.75rem;
   }
-</style>
+</style> --}}
 <main class="pt-90">
     <section class="shop-main container d-flex pt-4 pt-xl-5">
       <div class="shop-sidebar side-sticky bg-body" id="shopFilter">
