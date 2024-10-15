@@ -158,7 +158,7 @@
                             </svg><span>Remove From Wishlist</span>
                             </a>
                         @else
-                            <form name="addtocart-form" method="post" action="{{ route('cart.add') }}" id="wishlist-form">
+                            <form name="addtocart-form" method="post" action="{{ route('wishlist.add') }}" id="wishlist-form">
                                 @csrf
                                 <input type="hidden" name="id" value="{{ $product->id }}">
                                 <input type="hidden" name="quantity" value="1">
@@ -524,14 +524,28 @@
                                         </span>
                                     </div>
 
-                                    <button
-                                        class="pc__btn-wl position-absolute top-0 end-0 bg-transparent border-0 js-add-wishlist"
-                                        title="Add To Wishlist">
-                                        <svg width="16" height="16" viewBox="0 0 20 20" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg">
+                                    @if(Cart::instance('wishlist')->content()->where('id',$rproduct->id)->count()>0)
+                                    <button type="submit" class="pc__btn-wl position-absolute top-0 end-0 bg-transparent border-0 js-add-wishlist filled-heart" title="Add To Wishlist">
+                                        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <use href="#icon_heart" />
                                         </svg>
                                     </button>
+                                    @else
+                                    <form action="{{ route('wishlist.add') }}" method="POST">
+                                      @csrf
+                                      <input type="hidden" name="id" value="{{ $rproduct->id }}">
+                                      <input type="hidden" name="name" value="{{ $rproduct->name }}">
+                                      <input type="hidden" name="price" value="{{ $rproduct->sale_price ==''?$rproduct->regular_price:$rproduct->sale_price }}">
+                                      <input type="hidden" name="quantity" value="1">
+                                      <button type="submit" class="pc__btn-wl position-absolute top-0 end-0 bg-transparent border-0 js-add-wishlist" title="Add To Wishlist">
+                                        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <use href="#icon_heart" />
+                                        </svg>
+                                    </button>
+                                </form>
+                                @endif
+
+
                                 </div>
                             </div>
                         @endforeach
