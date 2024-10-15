@@ -33,6 +33,7 @@ Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.in
 Route::post('/wishlist/add', [WishlistController::class, 'add_to_wishlist'])->name('wishlist.add');
 Route::delete('/wishlist/item/remove/{rowId}', [WishlistController::class,'remove_item'])->name('wishlist.item.remove');
 Route::delete('/wishlist/clear', [WishlistController::class,'empty_wishlist'])->name('wishlist.item.clear');
+Route::post('/wishlist/move-to-cart/{rowId}', [WishlistController::class,'move_to_cart'])->name('wishlist.move.to.cart');
 
 
 
