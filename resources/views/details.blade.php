@@ -1,4 +1,9 @@
 @extends('layouts.app')
+<style>
+    .filled-heart{
+        color: orange !important;
+    }
+</style>
 @section('content')
     <main class="pt-90">
         <div class="mb-md-1 pb-md-3"></div>
@@ -145,11 +150,29 @@
                         </div>
                     </form>                   
                     @endif
+
                     <div class="product-single__addtolinks">
-                        <a href="#" class="menu-link menu-link_us-s add-to-wishlist"><svg width="16"
-                                height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        @if(Cart::instance('wishlist')->content()->where('id',$product->id)->count()>0)
+                            <a href="javascript:void(0)" class="menu-link menu-link_us-s add-to-wishlist filled-heart"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <use href="#icon_heart" />
-                            </svg><span>Add to Wishlist</span></a>
+                            </svg><span>Remove From Wishlist</span>
+                            </a>
+                        @else
+                            <form name="addtocart-form" method="post" action="{{ route('cart.add') }}" id="wishlist-form">
+                                @csrf
+                                <input type="hidden" name="id" value="{{ $product->id }}">
+                                <input type="hidden" name="quantity" value="1">
+                                <input type="hidden" name="name" value="{{ $product->name }}">
+                                <input type="hidden" name="price" value="{{ $product->sale_price==''?$product->regular_price:$product->sale_price }}">
+                                <a href="javascript:void(0)" class="menu-link menu-link_us-s add-to-wishlist" onclick="document.getElementById('wishlist-form').submit();"><svg width="16"
+                                        height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <use href="#icon_heart" />
+                                    </svg><span>Add to Wishlist</span>
+                                </a>
+                            </form>
+                        @endif
+
+
                         <share-button class="share-button">
                             <button
                                 class="menu-link menu-link_us-s to-share border-0 bg-transparent d-flex align-items-center">
