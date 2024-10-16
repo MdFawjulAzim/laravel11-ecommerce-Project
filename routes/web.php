@@ -82,7 +82,9 @@ Route::middleware(['auth', AuthAdmin::class])->group(function () {
 
     //----------------------------------------------------------------
 
-    //Shop Page
+    //Coupons Page authentication
+    Route::get('/admin/coupons',[AdminController::class, 'coupons'])->name('admin.coupons');
+
 
 
 });
