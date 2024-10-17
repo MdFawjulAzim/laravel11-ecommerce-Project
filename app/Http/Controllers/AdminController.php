@@ -507,6 +507,12 @@ class AdminController extends Controller
         // Redirect and display success message
         return redirect()->route('admin.coupons')->with('status', 'Coupon Has Been Updated Successfully!');
     }
+
+    public function coupon_delete($id){
+        $coupon=Coupon::find($id);
+        $coupon->delete();
+        return redirect()->route('admin.coupons')->with('status', 'Coupon Deleted Successfully!'); 
+    }
     
 
 
